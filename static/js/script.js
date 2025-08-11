@@ -346,3 +346,56 @@ document
         alert("Произошла ошибка при переходе");
       });
   });
+
+document.addEventListener('DOMContentLoaded', function() {
+  const select = document.querySelector('.custom-select');
+  const styledSelect = select.querySelector('.select-styled');
+  const options = select.querySelectorAll('.select-options li');
+  const hiddenSelect = select.querySelector('select');
+  
+  // Установка начального текста
+  styledSelect.textContent = hiddenSelect.options[hiddenSelect.selectedIndex].text;
+  
+  // Обработчик клика на стилизованный select
+  styledSelect.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const isActive = this.classList.toggle('active');
+    select.querySelector('.select-options').classList.toggle('show', isActive);
+    
+    // Закрытие других открытых select'ов
+    document.querySelectorAll('.custom-select .select-styled').forEach(el => {
+      if (el !== this) {
+        el.classList.remove('active');
+        el.nextElementSibling.classList.remove('show');
+      }
+    });
+  });
+  
+  // Обработчик выбора опции
+  options.forEach(option => {
+    option.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const value = this.getAttribute('data-value');
+      
+      // Обновление скрытого select
+      hiddenSelect.value = value;
+      
+      // Обновление стилизованного отображения
+      styledSelect.textContent = this.textContent;
+      styledSelect.classList.remove('active');
+      
+      // Помечаем выбранный элемент
+      options.forEach(opt => opt.removeAttribute('data-selected'));
+      this.setAttribute('data-selected', 'true');
+      
+      // Скрываем options
+      select.querySelector('.select-options').classList.remove('show');
+    });
+  });
+  
+  // Закрытие при клике вне
+  document.addEventListener('click', function() {
+    styledSelect.classList.remove('active');
+    select.querySelector('.select-options').classList.remove('show');
+  });
+});
