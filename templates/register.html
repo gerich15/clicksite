@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Comfortaa:wght@300..700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Play:wght@400;700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Roboto+Slab:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/auth.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="auth-container">
+      <h2>Регистрация</h2>
+      <form action="/register" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label>Имя:</label>
+          <input type="text" name="name" required />
+        </div>
+        <div class="form-group">
+          <label>Пароль:</label>
+          <input type="password" name="password" required />
+        </div>
+        <div class="form-group">
+          <label>Телефон:</label>
+          <input type="tel" name="phone" />
+        </div>
+        <div class="form-group">
+          <label>Аватар:</label>
+          <div class="avatar-upload">
+            <label for="avatar-input" class="avatar-label">
+              <span class="avatar-preview" id="avatar-preview">
+                <i class="fas fa-user-circle default-avatar"></i>
+              </span>
+              <span class="avatar-text">Выберите аватар</span>
+            </label>
+            <input
+              class="form-group_avatar"
+              id="avatar-input"
+              type="file"
+              name="avatar"
+              accept="image/*"
+            />
+          </div>
+        </div>
+        <button type="submit" class="btn">Зарегистрироваться</button>
+      </form>
+      <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
+    </div>
+    <script defer src="/static/js/registr.js"></script>
+  </body>
+</html>

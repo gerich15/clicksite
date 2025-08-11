@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClickCar - Премиум автосервисы</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo_imag">
+          <img src="/frontend/images/jpeg/logo.png" alt="" />
+        </div>
+        <div class="logo"><span>Click</span><span>Car</span></div>
+        <nav>
+          <a href="#services" class="active">
+            <i class="act fas fa-car"></i> Сервисы
+          </a>
+          <a href="#reviews"> <i class="rev fas fa-comment-alt"></i> Отзывы </a>
+          <a href="#premium"> <i class="pre fas fa-crown"></i> Premium </a>
+          <a href="#about"> <i class="ab fas fa-info-circle"></i> О нас </a>
+          <a href="/templates/profile.html">
+            <i class="fas fa-user"></i>Профиль</a
+          >
+        </nav>
+        <div class="auth-buttons">
+          <button class="btn btn-login">
+            <i class="fas fa-user"></i> Войти
+          </button>
+          <button class="btn btn-register">
+            <a href="/templates/register.html"
+              ><i class="fas fa-user-plus"></i> Регистрация</a
+            >
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero-content">
+          <h1>Найдите лучший автосервис</h1>
+          <p>
+            Более 500 проверенных сервисов с рейтингами и реальными отзывами
+          </p>
+          <button class="btn btn-hero" id="btn-hero">Найти сервис</button>
+        </div>
+        <div class="hero-image">
+          <img src="/frontend/images/jpeg/orig.jpeg" alt="Автосервис" />
+        </div>
+      </section>
+
+      <section class="search-section">
+        <div class="search-box">
+          <input
+            type="text"
+            placeholder="Например: 'замена масла' или 'диагностика двигателя'"
+          />
+          <button class="btn-search" id="btn btn-search">Поиск</button>
+          <button id="show-map" class="btn-primary">Показать карту</button>
+        </div>
+
+        <div id="map-container" style="display: none">
+          <div id="map" style="width: 100%; height: 600px"></div>
+          <button id="close-map" class="map-close-btn">×</button>
+        </div>
+
+        <div id="service-info" style="display: none">
+          <h3 id="service-name"></h3>
+          <p id="service-address"></p>
+          <button id="close-card">Закрыть</button>
+        </div>
+
+        <main>
+          <div id="map-container" style="display: none">
+            <div id="map" style="width: 100%; height: 600px"></div>
+          </div>
+
+          <div id="service-card" class="card-hidden">
+            <h3 id="service-name"></h3>
+            <p id="service-address"></p>
+            <p id="service-phone"></p>
+            <button id="close-card">Закрыть</button>
+          </div>
+        </main>
+
+        <div class="filters">
+          <select>
+            <option>Все категории</option>
+            <option>Двигатель</option>
+            <option>Ходовая часть</option>
+            <option>Кузовные работы</option>
+            <option>Электрика</option>
+          </select>
+          <select>
+            <option>Любой рейтинг</option>
+            <option>5 звезд</option>
+            <option>4+ звезды</option>
+            <option>3+ звезды</option>
+          </select>
+          <select>
+            <option>Любая цена</option>
+            <option>До 5 000 ₽</option>
+            <option>5 000 - 15 000 ₽</option>
+            <option>От 15 000 ₽</option>
+          </select>
+        </div>
+      </section>
+
+      <section id="services" class="services-section">
+        <h2><i class="fas fa-oil-can"></i> Популярные сервисы</h2>
+        <div class="services-grid" id="servicesGrid"></div>
+      </section>
+
+      <section id="reviews" class="reviews-section">
+        <h2><i class="fas fa-comment-alt"></i> Последние отзывы</h2>
+        <div class="reviews-container" id="reviewsContainer"></div>
+      </section>
+
+      <section id="premium" class="premium-section">
+        <div class="premium-content">
+          <h2><i class="fas fa-crown"></i> Добавьте свой сервис</h2>
+          <p>Подключите Premium-аккаунт и получите:</p>
+          <ul>
+            <li>Размещение в топе поиска</li>
+            <li>Возможность отвечать на отзывы</li>
+            <li>Расширенную статистику</li>
+            <li>Премиальную отметку</li>
+          </ul>
+          <button class="btn btn-premium" id="openPremiumModal">
+            Подключить за 990 ₽/мес
+          </button>
+        </div>
+        <div class="premium-image">
+          <img src="/frontend/images/jpeg/STO_2.jpg" alt="Premium" />
+        </div>
+      </section>
+
+      <section id="about" class="about-section">
+        <h2><i class="fas fa-info-circle"></i> О нас</h2>
+        <p>
+          ClickCar - это платформа для поиска лучших автосервисов с проверенными
+          отзывами и рейтингами. Мы работаем с 2015 года и помогли тысячам
+          автовладельцев найти качественный сервис.
+        </p>
+      </section>
+    </main>
+
+    <div class="modal" id="loginModal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Вход в аккаунт</h2>
+        <form id="loginForm">
+          <input type="email" placeholder="Email" required />
+          <input type="password" placeholder="Пароль" required />
+          <button type="submit" class="btn">Войти</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal" id="premiumModal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Подключение Premium</h2>
+        <div class="premium-options">
+          <div class="option">
+            <h3>1 месяц</h3>
+            <p class="price">990 ₽</p>
+            <button class="btn">Выбрать</button>
+          </div>
+          <div class="option recommended">
+            <h3>3 месяца</h3>
+            <p class="price">
+              2 490 ₽ <span class="save">(экономия 480 ₽)</span>
+            </p>
+            <button class="btn">Выбрать</button>
+          </div>
+          <div class="option">
+            <h3>12 месяцев</h3>
+            <p class="price">
+              8 990 ₽ <span class="save">(экономия 2 890 ₽)</span>
+            </p>
+            <button class="btn">Выбрать</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="reviewModal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Оставить отзыв</h2>
+        <form id="reviewForm">
+          <div class="form-group">
+            <label>Выберите сервис</label>
+            <select id="serviceSelect" required>
+              <option value="">-- Выберите сервис --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ваше имя</label>
+            <input type="text" id="reviewName" required />
+          </div>
+          <div class="form-group">
+            <label>Оценка</label>
+            <div class="rating-stars">
+              <i class="far fa-star" data-rating="1"></i>
+              <i class="far fa-star" data-rating="2"></i>
+              <i class="far fa-star" data-rating="3"></i>
+              <i class="far fa-star" data-rating="4"></i>
+              <i class="far fa-star" data-rating="5"></i>
+            </div>
+            <input type="hidden" id="reviewRating" value="0" required />
+          </div>
+          <div class="form-group">
+            <label>Текст отзыва</label>
+            <textarea id="reviewText" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn">Отправить отзыв</button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-gradient">
+        <div class="container">
+          <div class="footer-columns">
+            <!-- Контакты -->
+            <div class="footer-column contact-column">
+              <h3><i class="fas fa-map-marker-alt"></i> Контакты</h3>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <p>+7 (123) 456-78-90</p>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <p>info@autopremium.ru</p>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <p>Пн-Пт: 9:00 - 20:00</p>
+              </div>
+              <div class="social-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+              </div>
+            </div>
+
+            <!-- Подписка -->
+            <div class="footer-column subscribe-column">
+              <h3><i class="fas fa-paper-plane"></i> Подписка</h3>
+              <p>Получайте эксклюзивные предложения</p>
+              <form class="subscribe-form">
+                <input type="email" placeholder="Ваш email" required />
+                <button type="submit" class="btn-subscribe">
+                  <span>Подписаться</span>
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>© 2023 AutoPremium. Все права защищены</p>
+      </div>
+    </footer>
+
+    <script
+      defer
+      src="https://api-maps.yandex.ru/2.1/?apikey=6686afb6-6b41-44f3-882d-ba4443b1da73&lang=ru_RU"
+    ></script>
+    <script defer src="/static/js/map.js"></script>
+    <script defer src="/static/js/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/static/css/profile.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Боковая панель -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <i class="fas fa-store"></i>
+          <span>ClickCar</span>
+        </div>
+
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="#" class="nav-link active">
+              <i class="fas fa-user"></i>
+              <span>Профиль</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-list"></i>
+              <span>Мои объявления</span>
+              <span class="nav-badge">12</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-heart"></i>
+              <span>Избранное</span>
+              <span class="nav-badge">5</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-comment"></i>
+              <span>Сообщения</span>
+              <span class="nav-badge">3</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-chart-line"></i>
+              <span>Статистика</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-cog"></i>
+              <span>Настройки</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/logout" class="nav-link">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Выйти</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Основное содержимое -->
+      <main class="main-content">
+        <!-- Шапка профиля -->
+        <header class="profile-header">
+          <div class="avatar-container">
+            <img
+              src="/static/uploads/{{ user.avatar }}"
+              alt="Аватар"
+              id="avatar-preview"
+            />
+            <label for="avatar-upload" class="avatar-upload">
+              <i class="fas fa-camera"></i> Изменить
+            </label>
+            <input
+              type="file"
+              id="avatar-upload"
+              accept="image/*"
+              style="display: none"
+            />
+          </div>
+
+          <div class="profile-info">
+            <h1 class="profile-name">{{ user.name }}</h1>
+
+            <div class="profile-meta">
+              <div class="meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ user.city or 'Город не указан' }}</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-user-clock"></i>
+                <span>На сайте 2 года</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Подтвержден</span>
+              </div>
+            </div>
+
+            <div class="rating">
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <div class="rating-value">4.7</div>
+            </div>
+
+            <div class="profile-actions">
+              <button class="btn btn-primary" id="edit-profile-btn">
+                <i class="fas fa-edit"></i> Редактировать
+              </button>
+              <button class="btn btn-outline">
+                <i class="fas fa-plus"></i> Новое объявление
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Статистика -->
+        <section>
+          <h2 class="section-title">
+            <i class="fas fa-chart-pie"></i>
+            <span>Статистика</span>
+          </h2>
+
+          <div class="stats-cards">
+            <div class="stat-card primary">
+              <div class="stat-title">Всего просмотров</div>
+              <div class="stat-value">1,248</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> 12% за месяц
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-title">Активных объявлений</div>
+              <div class="stat-value">8</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> 2 новых
+              </div>
+            </div>
+
+            <div class="stat-card secondary">
+              <div class="stat-title">Продано товаров</div>
+              <div class="stat-value">24</div>
+              <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> 5 за месяц
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-title">Рейтинг продавца</div>
+              <div class="stat-value">4.7/5</div>
+              <div class="stat-change negative">
+                <i class="fas fa-arrow-down"></i> 0.1 за месяц
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Объявления -->
+        <section>
+          <div class="tabs">
+            <div class="tab active" data-tab="active">
+              <span>Активные</span>
+              <span class="tab-badge">8</span>
+            </div>
+            <div class="tab" data-tab="inactive">
+              <span>Неактивные</span>
+              <span class="tab-badge">4</span>
+            </div>
+            <div class="tab" data-tab="sold">
+              <span>Проданные</span>
+              <span class="tab-badge">12</span>
+            </div>
+            <div class="tab" data-tab="drafts">
+              <span>Черновики</span>
+            </div>
+          </div>
+
+          <div class="ads-grid">
+            <!-- Активные объявления -->
+            <div class="ad-card" data-tab="active">
+              <div class="ad-image">
+                <img
+                  src="https://via.placeholder.com/400x300"
+                  alt="Фото товара"
+                />
+                <span class="ad-status active">Активно</span>
+              </div>
+              <div class="ad-details">
+                <div class="ad-price">25 000 ₽</div>
+                <h3 class="ad-title">Рычаг верхний Mersedes-Benz AMG</h3>
+                <div class="ad-meta">
+                  <span><i class="fas fa-eye"></i> 124</span>
+                  <span><i class="fas fa-calendar-alt"></i> 3 дня назад</span>
+                </div>
+                <div class="ad-actions">
+                  <div class="ad-action">
+                    <i class="fas fa-edit"></i>
+                    <span>Редактировать</span>
+                  </div>
+                  <div class="ad-action">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Статистика</span>
+                  </div>
+                  <div class="ad-action">
+                    <i class="fas fa-pause"></i>
+                    <span>На паузу</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ad-card new" data-tab="active">
+              <div class="ad-image">
+                <img
+                  src="https://via.placeholder.com/400x300"
+                  alt="Фото товара"
+                />
+                <span class="ad-status active">Активно</span>
+              </div>
+              <div class="ad-details">
+                <div class="ad-price">12 500 ₽</div>
+                <h3 class="ad-title">Nissan GTR Доп. помпа охлаждения</h3>
+                <div class="ad-meta">
+                  <span><i class="fas fa-eye"></i> 87</span>
+                  <span><i class="fas fa-calendar-alt"></i> 1 день назад</span>
+                </div>
+                <div class="ad-actions">
+                  <div class="ad-action">
+                    <i class="fas fa-edit"></i>
+                    <span>Редактировать</span>
+                  </div>
+                  <div class="ad-action">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Статистика</span>
+                  </div>
+                  <div class="ad-action">
+                    <i class="fas fa-pause"></i>
+                    <span>На паузу</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Неактивные объявления -->
+            <div class="ad-card" data-tab="inactive" style="display: none">
+              <div class="ad-image">
+                <img
+                  src="https://via.placeholder.com/400x300"
+                  alt="Фото товара"
+                />
+                <span class="ad-status inactive">На паузе</span>
+              </div>
+              <div class="ad-details">
+                <div class="ad-price">45 000 ₽</div>
+                <h3 class="ad-title">Launch</h3>
+                <div class="ad-meta">
+                  <span><i class="fas fa-eye"></i> 342</span>
+                  <span
+                    ><i class="fas fa-calendar-alt"></i> 2 недели назад</span
+                  >
+                </div>
+                <div class="ad-actions">
+                  <div class="ad-action">
+                    <i class="fas fa-edit"></i>
+                    <span>Редактировать</span>
+                  </div>
+                  <div class="ad-action">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Статистика</span>
+                  </div>
+                  <div class="ad-action">
+                    <i class="fas fa-play"></i>
+                    <span>Активировать</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Проданные объявления -->
+            <div class="ad-card" data-tab="sold" style="display: none">
+              <div class="ad-image">
+                <img
+                  src="https://via.placeholder.com/400x300"
+                  alt="Фото товара"
+                />
+                <span class="ad-status inactive">Продано</span>
+              </div>
+              <div class="ad-details">
+                <div class="ad-price">18 000 ₽</div>
+                <h3 class="ad-title">Limfeerder</h3>
+                <div class="ad-meta">
+                  <span><i class="fas fa-eye"></i> 215</span>
+                  <span><i class="fas fa-calendar-alt"></i> 1 месяц назад</span>
+                </div>
+                <div class="ad-actions">
+                  <div class="ad-action">
+                    <i class="fas fa-redo"></i>
+                    <span>Перевыложить</span>
+                  </div>
+                  <div class="ad-action">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Статистика</span>
+                  </div>
+                  <div class="ad-action">
+                    <i class="fas fa-trash"></i>
+                    <span>Удалить</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Форма редактирования (скрыта по умолчанию) -->
+        <div class="edit-form-container" style="display: none" id="edit-form">
+          <h2 class="section-title">
+            <i class="fas fa-user-edit"></i>
+            <span>Редактирование профиля</span>
+          </h2>
+
+          <form id="profile-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Имя</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name"
+                  value="{{ user.name }}"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Фамилия</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="surname"
+                  value="{{ user.surname or '' }}"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  value="{{ session.user_email }}"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Телефон</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  name="phone"
+                  value="{{ user.phone or '' }}"
+                />
+              </div>
+
+              <div class="form-group full-width">
+                <label class="form-label">О себе</label>
+                <textarea class="form-control" name="bio" rows="3">
+{{ user.bio or '' }}</textarea
+                >
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Город</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="city"
+                  value="{{ user.city or '' }}"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Дата рождения</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  name="birthday"
+                  value="{{ user.birthday or '' }}"
+                />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-cancel" id="cancel-edit">
+                Отменить
+              </button>
+              <button type="submit" class="btn btn-save">
+                Сохранить изменения
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+    <script src="/static/js/profile.js"></script>
+  </body>
+</html>

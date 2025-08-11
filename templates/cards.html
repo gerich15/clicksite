@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Автосервис "МоторМастер" | Ремонт автомобилей в Москве</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/cards.css" />
+  </head>
+  <body>
+    <div class="service-container">
+      <!-- Хлебные крошки -->
+      <div class="breadcrumbs">
+        <a href="/">Главная</a>
+        <i class="fas fa-chevron-right"></i>
+        <a href="/services">Автосервисы</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>МоторМастер</span>
+      </div>
+
+      <!-- Основная карточка -->
+      <div class="service-card animated-card">
+        <div class="service-header">
+          <h1>Автосервис "МоторМастер"</h1>
+          <div class="service-rating">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+              <span>4.7 (128 отзывов)</span>
+            </div>
+            <div class="verified-badge">
+              <i class="fas fa-check-circle"></i>
+              Проверенный сервис
+            </div>
+          </div>
+        </div>
+
+        <!-- Галерея фото -->
+        <div class="service-gallery">
+          <div class="main-photo">
+            <img
+              src="images/service-main.jpg"
+              alt="Автосервис МоторМастер"
+              id="main-photo"
+            />
+            <div class="photo-badge"><i class="fas fa-camera"></i> 12 фото</div>
+          </div>
+          <div class="thumbnails">
+            <img
+              src="images/thumb1.jpg"
+              alt="Фото 1"
+              class="thumbnail active"
+              data-full="images/service-main.jpg"
+            />
+            <img
+              src="images/thumb2.jpg"
+              alt="Фото 2"
+              class="thumbnail"
+              data-full="images/photo2.jpg"
+            />
+            <img
+              src="images/thumb3.jpg"
+              alt="Фото 3"
+              class="thumbnail"
+              data-full="images/photo3.jpg"
+            />
+            <img
+              src="images/thumb4.jpg"
+              alt="Фото 4"
+              class="thumbnail"
+              data-full="images/photo4.jpg"
+            />
+          </div>
+        </div>
+
+        <!-- Основная информация -->
+        <div class="service-info">
+          <div class="info-block">
+            <h2><i class="fas fa-info-circle"></i> Основная информация</h2>
+            <div class="info-grid">
+              <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                  <strong>Адрес:</strong>
+                  <p>Москва, ул. Автозаводская, 23к1</p>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <div>
+                  <strong>Режим работы:</strong>
+                  <p>Пн-Пт: 9:00-21:00<br />Сб-Вс: 10:00-18:00</p>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-phone"></i>
+                <div>
+                  <strong>Телефон:</strong>
+                  <p><a href="tel:+74951234567">+7 (495) 123-45-67</a></p>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-car"></i>
+                <div>
+                  <strong>Специализация:</strong>
+                  <p>Немецкие автомобили, ТО, диагностика</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Услуги -->
+          <div class="info-block">
+            <h2><i class="fas fa-tools"></i> Услуги и цены</h2>
+            <div class="services-list">
+              <div class="service-item">
+                <div class="service-name">Замена масла</div>
+                <div class="service-price">от 1 500 ₽</div>
+                <button class="btn-detail">Подробнее</button>
+              </div>
+              <div class="service-item">
+                <div class="service-name">Диагностика подвески</div>
+                <div class="service-price">от 2 000 ₽</div>
+                <button class="btn-detail">Подробнее</button>
+              </div>
+              <div class="service-item">
+                <div class="service-name">Замена тормозных колодок</div>
+                <div class="service-price">от 3 500 ₽</div>
+                <button class="btn-detail">Подробнее</button>
+              </div>
+            </div>
+            <button class="btn-show-all">
+              <i class="fas fa-list"></i> Показать все услуги (24)
+            </button>
+          </div>
+
+          <!-- Описание -->
+          <div class="info-block">
+            <h2><i class="fas fa-file-alt"></i> Описание</h2>
+            <div class="description-text">
+              <p>
+                Автосервис "МоторМастер" предлагает профессиональный ремонт и
+                обслуживание немецких автомобилей (Audi, BMW, Mercedes,
+                Volkswagen, Porsche). Работаем с 2010 года.
+              </p>
+              <p>
+                Наш сервисный центр оснащен современным диагностическим
+                оборудованием, используем только оригинальные запчасти и
+                качественные расходные материалы.
+              </p>
+              <ul class="features-list">
+                <li>
+                  <i class="fas fa-check"></i> Бесплатная диагностика при
+                  комплексном ремонте
+                </li>
+                <li><i class="fas fa-check"></i> Гарантия на все виды работ</li>
+                <li>
+                  <i class="fas fa-check"></i> Собственный склад запчастей
+                </li>
+                <li>
+                  <i class="fas fa-check"></i> Техническая помощь на дороге
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Боковая панель -->
+        <div class="service-sidebar">
+          <div class="sidebar-card">
+            <div class="price-label">Средний чек:</div>
+            <div class="price-value">5 000 - 15 000 ₽</div>
+            <button class="btn-primary btn-cta">
+              <i class="fas fa-phone"></i> Записаться
+            </button>
+            <button class="btn-secondary">
+              <i class="fas fa-map-marker-alt"></i> Как проехать
+            </button>
+            <div class="social-links">
+              <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-telegram"></i
+              ></a>
+              <a href="#" class="social-link"
+                ><i class="fab fa-whatsapp"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="sidebar-card map-card">
+            <div id="service-map" class="service-map">
+              <img src="images/map-placeholder.jpg" alt="Карта" />
+              <button class="btn-map-expand">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+            <div class="distance-info">
+              <i class="fas fa-car"></i> 15 мин от центра
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Отзывы -->
+      <div class="reviews-section">
+        <h2><i class="fas fa-comment-alt"></i> Отзывы</h2>
+        <div class="reviews-container">
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-author">Александр К.</div>
+              <div class="review-rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="review-date">12.05.2023</div>
+            </div>
+            <div class="review-text">
+              Отличный сервис, быстро сделали ТО моей Audi A6. Цены адекватные,
+              мастер все объяснил. Буду обращаться еще.
+            </div>
+          </div>
+
+          <div class="review-card">
+            <div class="review-header">
+              <div class="review-author">Марина В.</div>
+              <div class="review-rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <div class="review-date">28.04.2023</div>
+            </div>
+            <div class="review-text">
+              Заменили тормозные колодки на BMW X5. Сделали все качественно, но
+              пришлось ждать запчасти 2 дня.
+            </div>
+          </div>
+        </div>
+        <button class="btn-show-all">
+          <i class="fas fa-book-open"></i> Все отзывы (128)
+        </button>
+      </div>
+    </div>
+
+    <script
+      defer
+      src="https://api-maps.yandex.ru/2.1/?apikey=6686afb6-6b41-44f3-882d-ba4443b1da73&lang=ru_RU"
+    ></script>
+    <script src="/static/js/cards.js"></script>
+  </body>
+</html>
