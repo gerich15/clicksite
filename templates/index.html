@@ -94,25 +94,26 @@
         </main>
 
         <div class="filters">
-          <select>
-            <option>Все категории</option>
-            <option>Двигатель</option>
-            <option>Ходовая часть</option>
-            <option>Кузовные работы</option>
-            <option>Электрика</option>
-          </select>
-          <select>
-            <option>Любой рейтинг</option>
-            <option>5 звезд</option>
-            <option>4+ звезды</option>
-            <option>3+ звезды</option>
-          </select>
-          <select>
-            <option>Любая цена</option>
-            <option>До 5 000 ₽</option>
-            <option>5 000 - 15 000 ₽</option>
-            <option>От 15 000 ₽</option>
-          </select>
+         <div class="custom-select">
+  <select id="categories" class="select-hidden">
+    <option value="" disabled selected>Выберите категорию</option>
+    <option value="engine">Двигатель</option>
+    <option value="chassis">Ходовая часть</option>
+    <option value="electrics">Электрика</option>
+    <option value="body">Кузов</option>
+    <option value="suspension">Пневмоподвеска</option>
+    <option value="detailing">Детейлинг</option>
+  </select>
+  <div class="select-styled"></div>
+  <ul class="select-options">
+    <li data-value="engine">Двигатель</li>
+    <li data-value="chassis">Ходовая часть</li>
+    <li data-value="electrics">Электрика</li>
+    <li data-value="body">Кузов</li>
+    <li data-value="suspension">Пневмоподвеска</li>
+    <li data-value="detailing">Детейлинг</li>
+  </ul>
+</div>
         </div>
       </section>
 
