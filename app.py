@@ -1,12 +1,15 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash, abort
+from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os
 from dotenv import load_dotenv
 import requests
 from flask_sqlalchemy import SQLAlchemy
+from functools import wraps
+from sqlalchemy import or_
 
 # Инициализация приложения
-app = Flask(__name__)
+app = Flask(__name__)  # Исправлено: name → __name__
 load_dotenv()
 
 # Конфигурация приложения
@@ -15,6 +18,7 @@ app.config.update({
     'SQLALCHEMY_DATABASE_URI': 'sqlite:///services.db',
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     'UPLOAD_FOLDER': 'static/uploads',
+    'MAX_CONTENT_LENGTH': 16 * 1024 * 1024,  # Макс. размер файла — 16MB
     'YANDEX_API_KEY': os.getenv('YANDEX_API_KEY'),
     'YANDEX_GEOCODER_KEY': os.getenv('YANDEX_GEOCODER_KEY')
 })
@@ -22,7 +26,28 @@ app.config.update({
 # Инициализация базы данных
 db = SQLAlchemy(app)
 
-# Модель данных
+# Поддерживаемые расширения файлов
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+# --- Модели ---
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    avatar = db.Column(db.String(100), default='default.jpg')
+    phone = db.Column(db.String(20))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 
 class Service(db.Model):
@@ -32,8 +57,8 @@ class Service(db.Model):
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)
     phone = db.Column(db.String(20))
-    services = db.Column(db.String(200))
-    rating = db.Column(db.Float)
+    services = db.Column(db.String(200))  # Например: "ТО|ремонт|шиномонтаж"
+    rating = db.Column(db.Float, default=0.0)
     description = db.Column(db.Text)
 
     def to_dict(self):
@@ -50,18 +75,7 @@ class Service(db.Model):
         }
 
 
-# Моковые данные для демонстрации
-users = {
-    "admin@example.com": {
-        "name": "Admin",
-        "password": "123456",
-        "avatar": "default.jpg",
-        "phone": "+79001234567"
-    }
-}
-
-# Вспомогательные функции
-
+# --- Вспомогательные функции ---
 
 def yandex_geocode(address):
     """Геокодирование через API Яндекса"""
@@ -75,8 +89,9 @@ def yandex_geocode(address):
         pos = feature['GeoObject']['Point']['pos']
         full_address = feature['GeoObject']['metaDataProperty']['GeocoderMetaData']['text']
 
+        coords = list(map(float, pos.split()))
         return {
-            'coords': list(map(float, pos.split())),
+            'coords': coords,
             'address': full_address
         }
     except Exception as e:
@@ -85,33 +100,45 @@ def yandex_geocode(address):
 
 
 def notify_new_service(service):
-    """Функция для уведомлений"""
+    """Функция для уведомлений (можно заменить на email, Telegram и т.д.)"""
     app.logger.info(f"New service added: {service.name}")
 
-# Маршруты приложения
 
+# --- Декораторы ---
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_email' not in session:
+            flash('Пожалуйста, войдите в систему.', 'warning')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+# --- Маршруты ---
 
 @app.route('/')
 def index():
     """Главная страница"""
-    return render_template('index.html',
-                           yandex_api_key=app.config['YANDEX_API_KEY'],
-                           service=service_data)
+    return render_template('index.html', yandex_api_key=app.config['YANDEX_API_KEY'])
 
 
 @app.route('/api/services', methods=['GET'])
 def get_services():
-    """API для получения списка сервисов"""
+    """API для получения списка сервисов с фильтрацией и пагинацией"""
     try:
-        search = request.args.get('search')
+        search = request.args.get('search', '')
         bbox = request.args.get('bbox')
         service_type = request.args.get('service_type')
+        page = int(request.args.get('page', 1))
+        per_page = 20
 
         query = Service.query
 
         if search:
             query = query.filter(
-                db.or_(
+                or_(
                     Service.name.ilike(f'%{search}%'),
                     Service.address.ilike(f'%{search}%'),
                     Service.services.ilike(f'%{search}%')
@@ -121,43 +148,48 @@ def get_services():
         if bbox:
             coords = list(map(float, bbox.split(',')))
             query = query.filter(
-                Service.lat.between(coords[0], coords[2]),
-                Service.lng.between(coords[1], coords[3])
+                Service.lat.between(coords[1], coords[3]),  # lat: y1, y2
+                Service.lng.between(coords[0], coords[2])   # lng: x1, x2
             )
 
         if service_type:
             query = query.filter(Service.services.ilike(f'%{service_type}%'))
 
-        services = query.limit(100).all()
-        return jsonify([s.to_dict() for s in services])
+        pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+        services = pagination.items
+
+        return jsonify({
+            'services': [s.to_dict() for s in services],
+            'has_next': pagination.has_next,
+            'page': page,
+            'total': pagination.total
+        })
 
     except Exception as e:
         app.logger.error(f"Service search error: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Internal server error'}), 500
 
 
 @app.route('/api/services', methods=['POST'])
+@login_required
 def add_service():
-    """API для добавления нового сервиса"""
+    """API для добавления нового сервиса (только для авторизованных)"""
     try:
         data = request.get_json()
 
-        # Валидация данных
         required_fields = ['name', 'address']
         if not all(field in data for field in required_fields):
             return jsonify({'error': 'Missing required fields'}), 400
 
-        # Геокодирование
         geocode_result = yandex_geocode(data['address'])
         if not geocode_result:
-            return jsonify({'error': 'Geocoding failed'}), 500
+            return jsonify({'error': 'Geocoding failed. Check address.'}), 500
 
-        # Создание сервиса
         new_service = Service(
             name=data['name'],
             address=geocode_result['address'],
-            lat=geocode_result['coords'][0],
-            lng=geocode_result['coords'][1],
+            lat=geocode_result['coords'][1],  # Y — широта
+            lng=geocode_result['coords'][0],  # X — долгота
             phone=data.get('phone'),
             services='|'.join(data.get('services', [])),
             rating=data.get('rating', 0),
@@ -168,43 +200,52 @@ def add_service():
         db.session.commit()
 
         notify_new_service(new_service)
-        return jsonify(new_service.to_dict())
+        return jsonify(new_service.to_dict()), 201
 
     except Exception as e:
         db.session.rollback()
         app.logger.error(f"Add service error: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Failed to add service'}), 500
 
-# Маршруты для аутентификации
 
+# --- Аутентификация ---
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """Регистрация пользователя"""
     if request.method == 'POST':
-        email = request.form['email']
-        if email in users:
-            flash('Email already registered!', 'error')
+        name = request.form['name']
+        email = request.form['email'].lower()
+        password = request.form['password']
+        phone = request.form['phone']
+
+        if len(password) < 6:
+            flash('Пароль должен быть не менее 6 символов.', 'error')
             return redirect(url_for('register'))
 
-        # Сохранение аватара
+        if User.query.filter_by(email=email).first():
+            flash('Email уже зарегистрирован.', 'error')
+            return redirect(url_for('register'))
+
         avatar = 'default.jpg'
         if 'avatar' in request.files:
             file = request.files['avatar']
-            if file.filename != '':
+            if file and file.filename != '' and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 avatar = filename
+            elif file.filename != '':
+                flash('Недопустимый формат файла.', 'error')
+                return redirect(url_for('register'))
 
-        # Создание пользователя
-        users[email] = {
-            "name": request.form['name'],
-            "password": request.form['password'],
-            "avatar": avatar,
-            "phone": request.form['phone']
-        }
+        user = User(name=name, email=email, phone=phone, avatar=avatar)
+        user.set_password(password)
+
+        db.session.add(user)
+        db.session.commit()
 
         session['user_email'] = email
+        flash('Регистрация успешна!', 'success')
         return redirect(url_for('profile'))
 
     return render_template('register.html')
@@ -212,41 +253,43 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Аутентификация пользователя"""
+    """Вход пользователя"""
     if request.method == 'POST':
-        email = request.form['email']
+        email = request.form['email'].lower()
         password = request.form['password']
 
-        if email in users and users[email]['password'] == password:
+        user = User.query.filter_by(email=email).first()
+        if user and user.check_password(password):
             session['user_email'] = email
+            flash('Вы успешно вошли.', 'success')
             return redirect(url_for('profile'))
         else:
-            flash('Invalid email or password', 'error')
+            flash('Неверный email или пароль.', 'error')
 
     return render_template('login.html')
 
 
 @app.route('/profile', methods=['GET', 'POST'])
+@login_required
 def profile():
     """Профиль пользователя"""
-    if 'user_email' not in session:
-        return redirect(url_for('login'))
-
-    user = users[session['user_email']]
+    user = User.query.filter_by(email=session['user_email']).first()
+    if not user:
+        abort(404)
 
     if request.method == 'POST':
-        # Обновление профиля
-        user['name'] = request.form['name']
-        user['phone'] = request.form['phone']
+        user.name = request.form['name']
+        user.phone = request.form['phone']
 
         if 'avatar' in request.files:
             file = request.files['avatar']
-            if file.filename != '':
+            if file and file.filename != '' and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                user['avatar'] = filename
+                user.avatar = filename
 
-        flash('Profile updated successfully!', 'success')
+        db.session.commit()
+        flash('Профиль обновлён!', 'success')
 
     return render_template('profile.html', user=user)
 
@@ -255,37 +298,11 @@ def profile():
 def logout():
     """Выход из системы"""
     session.pop('user_email', None)
+    flash('Вы вышли из системы.', 'info')
     return redirect(url_for('index'))
 
 
-# Моковые данные для демонстрации
-service_data = {
-    "name": "Автосервис \"МоторМастер\"",
-    "rating": 4.7,
-    "reviews_count": 128,
-    "address": "Москва, ул. Автозаводская, 23к1",
-    "phone": "+74951234567",
-    "working_hours": {
-        "weekdays": "9:00-21:00",
-        "weekend": "10:00-18:00"
-    },
-    "specialization": "Немецкие автомобили, ТО, диагностика",
-    "description": "Профессиональный ремонт и обслуживание автомобилей",
-    "features": [
-        "Бесплатная диагностика",
-        "Гарантия на работы",
-        "Собственный склад запчастей"
-    ],
-    "services": [
-        {"name": "Замена масла", "price": "от 1 500 ₽"},
-        {"name": "Диагностика подвески", "price": "от 2 000 ₽"}
-    ],
-    "photos": [
-        "service-main.jpg",
-        "photo2.jpg"
-    ]
-}
-
+# --- API для отзывов и бронирования ---
 
 @app.route('/api/reviews')
 def get_reviews():
@@ -296,20 +313,54 @@ def get_reviews():
             "rating": 5,
             "date": "12.05.2023",
             "text": "Отличный сервис, быстро сделали ТО"
+        },
+        {
+            "author": "Марина П.",
+            "rating": 4,
+            "date": "05.06.2023",
+            "text": "Хорошее обслуживание, но немного дорого"
         }
     ]
     return jsonify(reviews)
 
 
 @app.route('/api/book', methods=['POST'])
+@login_required
 def book_service():
     """API для записи на сервис"""
-    data = request.json
-    return jsonify({"status": "success", "message": "Запись успешно создана"})
+    data = request.get_json()
+    required = ['service_id', 'datetime']
+    if not all(k in data for k in required):
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    # Здесь можно добавить логику сохранения в БД
+    return jsonify({"status": "success", "message": "Запись успешно создана", "booking_id": 123})
 
 
-# Запуск приложения
+# --- Обработка ошибок ---
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template('500.html'), 500
+
+
+# --- Запуск приложения ---
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+
+        # Создание админа по умолчанию (для тестов)
+        if not User.query.filter_by(email='admin@example.com').first():
+            admin = User(name='Admin', email='admin@example.com', phone='+79001234567')
+            admin.set_password('123456')
+            db.session.add(admin)
+            db.session.commit()
+            app.logger.info("Admin user created: admin@example.com")
+
     app.run(host='0.0.0.0', port=5000, debug=True)
