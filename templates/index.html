@@ -13,36 +13,93 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <link rel="stylesheet" href="/static/css/style.css" />
-  </head>
+    <link rel="stylesheet" href="/static/css/auth.css"/>
   <body>
     <header>
       <div class="container">
-        <div class="logo_imag">
-          <img src="/frontend/images/jpeg/logo.png" alt="" />
-        </div>
         <div class="logo"><span>Click</span><span>Car</span></div>
         <nav>
-          <a href="#services" class="active">
+          <a href="services" class="active">
             <i class="act fas fa-car"></i> Сервисы
           </a>
-          <a href="#reviews"> <i class="rev fas fa-comment-alt"></i> Отзывы </a>
-          <a href="#premium"> <i class="pre fas fa-crown"></i> Premium </a>
-          <a href="#about"> <i class="ab fas fa-info-circle"></i> О нас </a>
-          <a href="/templates/profile.html">
-            <i class="fas fa-user"></i>Профиль</a
-          >
+          <a href="reviews"> <i class="rev fas fa-comment-alt"></i> Отзывы </a>
+          <a href="premium"> <i class="pre fas fa-crown"></i> Premium </a>
+          <a href="about"> <i class="ab fas fa-info-circle"></i> О нас </a>
+          <a href="profile.html"> <i class="fas fa-user"></i>Профиль</a>
         </nav>
         <div class="auth-buttons">
-          <button class="btn btn-login">
-            <i class="fas fa-user"></i> Войти
-          </button>
-          <button class="btn btn-register">
-            <a href="/templates/register.html"
-              ><i class="fas fa-user-plus"></i> Регистрация</a
-            >
-          </button>
+         <button class="btn btn-login">
+                    <i class="fas fa-user"></i> Войти
+                </button>
+                <button id="reg_but" class="btn btn-register">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </button>
         </div>
       </div>
+
+         <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal">
+        <div class="auth-container">
+            <span class="close-btn">&times;</span>
+            <h2>Вход</h2>
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" name="email" required />
+                </div>
+                <div class="form-group">
+                    <label>Пароль:</label>
+                    <input type="password" name="password" required />
+                </div>
+                <button type="submit" class="btnn">Войти</button>
+            </form>
+            <p>Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a></p>
+        </div>
+    </div>
+      <!--окно регистрации-->
+        <div id="registerModal" class="modal">
+        <div class="auth-container open_btn">
+            <span class="close-btn">&times;</span>
+            <h2>Регистрация</h2>
+            <form action="/register" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" name="email" required />
+                </div>
+                <div class="form-group">
+                    <label>Имя:</label>
+                    <input type="text" name="name" required />
+                </div>
+                <div class="form-group">
+                    <label>Пароль:</label>
+                    <input type="password" name="password" required />
+                </div>
+                <div class="form-group">
+                    <label>Телефон:</label>
+                    <input type="tel" name="phone" />
+                </div>
+                <div class="form-group">
+                    <label>Аватар:</label>
+                    <div class="avatar-upload">
+                        <label for="avatar-input" class="avatar-label">
+                            <span class="avatar-preview" id="avatar-preview">
+                                <i class="fas fa-user-circle default-avatar"></i>
+                            </span>
+                            <span class="avatar-text">Выберите аватар</span>
+                        </label>
+                        <input class="form-group_avatar"
+                            id="avatar-input"
+                            type="file"
+                            name="avatar"
+                            accept="image/*"
+                          />
+                    </div>
+                </div>
+                <button type="submit" class="btnn">Зарегистрироваться</button>
+            </form>
+            <p>Уже есть аккаунт? <a href="#" id="showLogin">Войти</a></p>
+        </div>
+    </div>
     </header>
 
     <main class="container">
@@ -52,10 +109,22 @@
           <p>
             Более 500 проверенных сервисов с рейтингами и реальными отзывами
           </p>
-          <button class="btn btn-hero" id="btn-hero">Найти сервис</button>
+          <button class="buttonn button-item">
+  <span class="button-bg">
+    <span class="button-bg-layers">
+      <span class="button-bg-layer button-bg-layer-1 -purple"></span>
+      <span class="button-bg-layer button-bg-layer-2 -turquoise"></span>
+      <span class="button-bg-layer button-bg-layer-3 -yellow"></span>
+    </span>
+  </span>
+  <span class="button-inner">
+    <span class="button-inner-static">Найти автосервис</span>
+    <span class="button-inner-hover">Найти автосервис</span>
+  </span>
+</button>
         </div>
         <div class="hero-image">
-          <img src="/frontend/images/jpeg/orig.jpeg" alt="Автосервис" />
+          <img src="/images/registr/png/serviceee.jpg" alt="Автосервис" />
         </div>
       </section>
 
@@ -93,9 +162,8 @@
           </div>
         </main>
 
-        <div class="filters">
-         <div class="custom-select">
-  <select id="categories" class="select-hidden">
+        <div class="cc-select-wrapper" id="service-category-select">
+  <select class="cc-native-select" id="service-category">
     <option value="" disabled selected>Выберите категорию</option>
     <option value="engine">Двигатель</option>
     <option value="chassis">Ходовая часть</option>
@@ -104,17 +172,19 @@
     <option value="suspension">Пневмоподвеска</option>
     <option value="detailing">Детейлинг</option>
   </select>
-  <div class="select-styled"></div>
-  <ul class="select-options">
-    <li data-value="engine">Двигатель</li>
-    <li data-value="chassis">Ходовая часть</li>
-    <li data-value="electrics">Электрика</li>
-    <li data-value="body">Кузов</li>
-    <li data-value="suspension">Пневмоподвеска</li>
-    <li data-value="detailing">Детейлинг</li>
-  </ul>
+  <div class="cc-select-trigger">
+    <span class="cc-selected-value">Выберите категорию</span>
+    <span class="cc-arrow">▼</span>
+  </div>
+  <div class="cc-select-options">
+    <div class="cc-option" data-value="engine">Двигатель</div>
+    <div class="cc-option" data-value="chassis">Ходовая часть</div>
+    <div class="cc-option" data-value="electrics">Электрика</div>
+    <div class="cc-option" data-value="body">Кузов</div>
+    <div class="cc-option" data-value="suspension">Пневмоподвеска</div>
+    <div class="cc-option" data-value="detailing">Детейлинг</div>
+  </div>
 </div>
-        </div>
       </section>
 
       <section id="services" class="services-section">
@@ -137,12 +207,15 @@
             <li>Расширенную статистику</li>
             <li>Премиальную отметку</li>
           </ul>
-          <button class="btn btn-premium" id="openPremiumModal">
-            Подключить за 990 ₽/мес
-          </button>
+          <button class="button">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24">
+        <path d="m18 0 8 12 10-8-4 20H4L0 4l10 8 8-12z"></path>
+    </svg>
+    Подключить за 1990 ₽/мес
+</button>
         </div>
         <div class="premium-image">
-          <img src="/frontend/images/jpeg/STO_2.jpg" alt="Premium" />
+          <img src="/images/registr/png/premium.jpg" alt="Premium" />
         </div>
       </section>
 
@@ -282,6 +355,7 @@
       src="https://api-maps.yandex.ru/2.1/?apikey=6686afb6-6b41-44f3-882d-ba4443b1da73&lang=ru_RU"
     ></script>
     <script defer src="/static/js/map.js"></script>
+    <script defer src="/static/js/registr.js"></script>
     <script defer src="/static/js/script.js"></script>
   </body>
 </html>
