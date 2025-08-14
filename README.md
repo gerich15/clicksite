@@ -17,25 +17,6 @@ ClickCar — это веб-приложение для:
 - Система оценок и отзывов
 - Личные кабинеты пользователей
 
-## 🛠 Технологии
-- **Backend**: Python + Flask
-- **Frontend**: HTML5, CSS3, JavaScript
-- **База данных**: SQLite (с возможностью перехода на PostgreSQL)
-- **Дополнительно**: 
-  - Flask-SQLAlchemy (ORM)
-  - python-dotenv (переменные окружения)
-  - Yandex Geocoder API
-
-## 🚀 Быстрый старт
-
-### 1. Установка зависимостей
-```bash
-git clone git@github.com:gerich15/clicksite.git
-cd clicksite
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
 ## File Tree: ClickCar
 
 `/home/****/Рабочий стол/ClickCar `
@@ -73,3 +54,22 @@ pip install -r requirements.txt
 ├── 📖 README.md
 └── 🐍 app.py
 ```
+
+## 🛠 Технологии
+- **Backend**: Python + Flask
+- **Frontend**: HTML5, CSS3, JavaScript
+- **База данных**: SQLite (с возможностью перехода на PostgreSQL)
+- **Дополнительно**: 
+  - Flask-SQLAlchemy (ORM)
+  - python-dotenv (переменные окружения)
+  - Yandex Geocoder API
+
+## 🚀 Быстрый старт
+
+### 1. Установка зависимостей
+```bash
+git clone git@github.com:gerich15/clicksite.git
+cd clicksite
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
